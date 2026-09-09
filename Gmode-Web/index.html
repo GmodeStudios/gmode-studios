@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmode Studios - Proyecto de Eventos</title>
+  
+  <!-- FAVICON / LOGO PARA LA PESTAÑA DEL NAVEGADOR -->
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* MENÚ DE NAVEGACIÓN FIJO */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1a1a1a;
+      padding: 15px 0;
+      border-bottom: 1px solid #2a2a2a;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-item button {
+      background: none;
+      border: none;
+      color: #bbbbbb;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      padding-bottom: 8px;
+      position: relative;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.3s;
+      font-family: inherit;
+    }
+
+    .nav-item button:hover,
+    .nav-item button.active {
+      color: #ffffff;
+    }
+
+    .nav-item button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #ffffff;
+      border-radius: 2px;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* SECCIONES OCULTAS POR DEFECTO */
+    .section-content {
+      display: none;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    /* HERO / INICIO */
+    .hero {
+      text-align: center;
+      padding: 20px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .logo-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .logo-wrapper:hover .logo-img {
+      transform: scale(1.05);
+      border-color: #ffffff;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin: 0 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #ffffff;
+    }
+
+    .hero-subtitle {
+      color: #aaaaaa;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+
+    .network-banner-card {
+      background: linear-gradient(145deg, #181818, #0f0f0f);
+      border: 1px solid #2e2e2e;
+      border-radius: 16px;
+      padding: 25px;
+      width: 100%;
+      max-width: 550px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .edition-badges {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .badge {
+      background: #000000;
+      border: 1px solid #333333;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #ffffff;
+      border-radius: 50%;
+    }
+
+    .event-notice {
+      color: #cccccc;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* TARJETAS DE CONTENIDO GENERALES */
+    .card {
+      background-color: #181818;
+      border: 1px solid #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #333333;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #222222;
+      padding-bottom: 8px;
+    }
+
+    /* REGLAS */
+    .rules-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rule-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #000000;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .rule-item:hover {
+      border-color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .rule-bullet {
+      width: 8px;
+      height: 8px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .rule-text {
+      color: #dddddd;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    /* GUÍA DE PASOS */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .step-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #000000;
+      border: 1px solid #333333;
+      border-radius: 8px;
+      padding: 20px;
+      transition: border-color 0.3s ease;
+    }
+
+    .step-card:hover {
+      border-color: #ffffff;
+    }
+
+    .step-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #000000;
+      background-color: #ffffff;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-content h4 {
+      margin: 0 0 5px 0;
+      font-size: 1.1rem;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .step-content p {
+      margin: 0;
+      color: #bbbbbb;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    /* BANNER DECORATIVO DE EVENTOS */
+    .decorative-banner {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #333333;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .decorative-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* TARJETA DE EVENTO */
+    .event-card {
+      background: #000000;
+      border: 1px solid #333333;
+      border-radius: 12px;
+      padding: 25px;
+      margin-top: 15px;
+    }
+
+    .event-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin: 0 0 15px 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .event-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      border-top: 1px solid #222222;
+      padding-top: 15px;
+      color: #dddddd;
+    }
+
+    /* REDES SOCIALES */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #000000;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #ffffff;
+      transition: border-color 0.3s ease, transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .social-card:hover {
+      border-color: #ffffff;
+      background-color: #0d0d0d;
+      transform: translateY(-3px);
+    }
+
+    .social-icon {
+      width: 32px;
+      height: 32px;
+      fill: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .social-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .social-name {
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .social-handle {
+      font-size: 0.82rem;
+      color: #888888;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .social-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li class="nav-item"><button class="nav-btn active" onclick="verSeccion('inicio', this)">Inicio</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="verSeccion('reglas', this)">Reglas</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="verSeccion('guia', this)">Guía</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="verSeccion('eventos', this)">Eventos</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="verSeccion('sitios-web', this)">Sitios Web</button></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="main-container">
+
+    <!-- 1. INICIO -->
+    <div id="inicio" class="section-content active">
+      <div class="hero">
+        <div class="logo-wrapper">
+          <img src="logo.png" alt="Logo Gmode Studios" class="logo-img">
+        </div>
+        <h1>GMODE STUDIOS</h1>
+        <p class="hero-subtitle">Comunidad de proyectos y eventos de Minecraft en español.</p>
+        
+        <div class="network-banner-card">
+          <div class="edition-badges">
+            <span class="badge"><span class="badge-dot"></span> PREMIUM</span>
+            <span class="badge"><span class="badge-dot"></span> NO PREMIUM</span>
+          </div>
+          <p class="event-notice">
+            Participa con tus amigos en nuestros eventos especiales. La dirección de acceso se publica únicamente durante las fechas del evento en Discord.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. REGLAS -->
+    <div id="reglas" class="section-content">
+      <div class="card">
+        <h2>Normativa de Eventos</h2>
+        <p style="color: #aaa; margin-bottom: 20px; font-size: 0.9rem;">El desconocimiento de las normas no exime de su cumplimiento.</p>
+        
+        <h3>Reglas Generales</h3>
+        <div class="rules-grid">
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Está prohibido el uso de autoclickers, hacks, cheats, x-ray, exploits o clientes/modificaciones que otorgan ventaja injusta.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Respeta a todos los miembros de la comunidad; no toleraremos insultos, amenazas, provocaciones ni conductas tóxicas.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Prohibido el spam o flood (publicitario, repetitivo o incitar a romper las normas).</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Usa los canales debidos para cada tema. Evita hablar de temas sensibles que afecten la experiencia de los demás.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Prohibido compartir links o archivos maliciosos, DDoS o vulneración de cuentas.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Prohibido el acoso por chat público o mensajes privados (se requieren pruebas).</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">No intentes aplicar justicia por tu cuenta; reporta las infracciones al Staff.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Si una decisión ya fue tomada, no se aceptarán berrinches y se marcará como resuelto.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Prohibida la venta, promoción o intercambio de cuentas. No se brinda soporte ante estafas.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">El uso de tags, nicks o skins ofensivas, políticos o que imiten rangos será sancionado.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Todas las sanciones son por IP. El uso de VPN puede resultar en bloqueo permanente.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Las sanciones no son negociables ni discutibles públicamente.</span>
+          </div>
+        </div>
+
+        <h3>Reglas en Betas y Repes</h3>
+        <div class="rules-grid">
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Se realizarán pausas periódicas para revisar tickets. Se requerirán pruebas dependiendo del motivo.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">El uso de CMDcam o cualquier cheat será sancionado de inmediato.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Reporta cualquier inconveniente directamente en el canal de tickets correspondiente.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">Cualquier mod externo a los MRPACKS oficiales que otorgue ventajas será sancionable.</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-bullet"></span>
+            <span class="rule-text">No se permite el spam ni la agresión dentro o fuera de las repes o betatests.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. GUÍA -->
+    <div id="guia" class="section-content">
+      <div class="card">
+        <h2>Guía de Participación</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Sigue estos sencillos pasos para unirte a nuestros eventos:</p>
+        
+        <div class="steps-container">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Únete a la Comunidad</h4>
+              <p>Ingresa a nuestro servidor de Discord oficial para mantenerte al tanto de todos los anuncios.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Atento a los Anuncios</h4>
+              <p>Revisa frecuentemente el canal de avisos, donde compartiremos las fechas y horarios exactos.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Conéctate al Evento</h4>
+              <p>Abre Minecraft a la hora pactada e ingresa con la IP/dirección enviada por el Staff.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. EVENTOS -->
+    <div id="eventos" class="section-content">
+      <!-- IMAGEN DECORATIVOS DE LA SECCIÓN EVENTOS -->
+      <div class="decorative-banner">
+        <img src="evento.png" alt="Decoración Eventos Gmode Studios">
+      </div>
+
+      <div class="card">
+        <h2>Próximos Eventos</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Mantente informado sobre las fechas y horarios de nuestras próximas fases.</p>
+
+        <div class="event-card">
+          <div class="event-title">Beta GGGames</div>
+          <div class="event-details">
+            <div><strong>Fecha:</strong> Viernes, 11 de Septiembre</div>
+            <div><strong>Hora:</strong> 15:30 HRS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SITIOS WEB Y REDES -->
+    <div id="sitios-web" class="section-content">
+      <div class="card">
+        <h2>Sitios Web y Redes</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Encuentra todos nuestros enlaces oficiales:</p>
+        
+        <div class="social-grid">
+          <!-- DISCORD -->
+          <a href="https://discord.gg/MZw9nkCusz" class="social-card" target="_blank">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <div class="social-info">
+              <span class="social-name">Discord</span>
+              <span class="social-handle">Servidor Oficial</span>
+            </div>
+          </a>
+
+          <!-- X (TWITTER) -->
+          <a href="https://x.com/GmodeStudios" class="social-card" target="_blank">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <div class="social-info">
+              <span class="social-name">X (Twitter)</span>
+              <span class="social-handle">@GmodeStudios</span>
+            </div>
+          </a>
+
+          <!-- TIKTOK -->
+          <a href="https://www.tiktok.com/@gmodestudios?_r=1&_t=ZS-99b71IsrT9x" class="social-card" target="_blank">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.29-2.58.73-5.22 2.62-6.93 1.18-1.07 2.73-1.69 4.31-1.78.25-.01.5-.01.75.01V12.1a4.237 4.237 0 0 0-2.3.69c-1.15.75-1.89 2.05-1.86 3.42.02 1.51.98 2.89 2.39 3.42 1.25.48 2.68.32 3.79-.39 1.01-.63 1.62-1.78 1.63-2.97.01-4.43.01-8.86.01-13.29 0-.98.01-1.96.01-2.96z"/>
+            </svg>
+            <div class="social-info">
+              <span class="social-name">TikTok</span>
+              <span class="social-handle">@gmodestudios</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS DE NAVEGACIÓN -->
+  <script>
+    function verSeccion(idSeccion, botonClickeado) {
+      const secciones = document.querySelectorAll('.section-content');
+      secciones.forEach(sec => sec.classList.remove('active'));
+
+      const botones = document.querySelectorAll('.nav-btn');
+      botones.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(idSeccion).classList.add('active');
+      botonClickeado.classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
